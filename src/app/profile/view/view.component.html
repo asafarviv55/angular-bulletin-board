@@ -1,0 +1,75 @@
+<div class="container">
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    Loading profile...
+  </div>
+
+  <div *ngIf="!isLoading && profile" class="profile-container">
+    <div class="profile-header">
+      <div class="avatar-section">
+        <img [src]="profile.avatar || 'assets/default-avatar.png'" alt="{{ profile.username }}" class="avatar" />
+        <span [class]="'verification-badge ' + getVerificationBadgeClass()">
+          {{ profile.verificationStatus }}
+        </span>
+      </div>
+      <div class="profile-info">
+        <h1>{{ profile.firstName }} {{ profile.lastName }}</h1>
+        <p class="username">@{{ profile.username }}</p>
+        <p class="location">{{ profile.location }}</p>
+        <div class="rating">
+          <span class="stars">★ {{ profile.rating }}/5</span>
+          <span class="reviews">({{ profile.reviewCount }} reviews)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-body">
+      <div class="profile-section">
+        <h3>About</h3>
+        <p class="bio">{{ profile.bio || 'No bio available' }}</p>
+      </div>
+
+      <div class="profile-section">
+        <h3>Statistics</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-value">{{ profile.totalAds }}</span>
+            <span class="stat-label">Total Ads</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ profile.activeAds }}</span>
+            <span class="stat-label">Active Ads</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ profile.joinedDate | date:'MMM yyyy' }}</span>
+            <span class="stat-label">Member Since</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <h3>Contact Information</h3>
+        <div class="contact-info">
+          <div *ngIf="profile.preferences.showEmail" class="contact-item">
+            <strong>Email:</strong> {{ profile.email }}
+          </div>
+          <div *ngIf="profile.preferences.showPhoneNumber" class="contact-item">
+            <strong>Phone:</strong> {{ profile.phoneNumber }}
+          </div>
+          <div *ngIf="profile.website" class="contact-item">
+            <strong>Website:</strong> <a [href]="profile.website" target="_blank">{{ profile.website }}</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button class="btn btn-primary">Send Message</button>
+        <button class="btn btn-secondary">View Ads</button>
+        <a routerLink="/profiles/edit/{{ profile.id }}" class="btn btn-info">Edit Profile</a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+<div class="container">
+  <h2>Messages <span *ngIf="getTotalUnreadCount() > 0" class="unread-badge">{{ getTotalUnreadCount() }}</span></h2>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    Loading conversations...
+  </div>
+
+  <div *ngIf="!isLoading" class="messaging-container">
+    <div class="conversations-panel">
+      <div class="conversations-header">
+        <h3>Conversations</h3>
+        <button class="btn btn-primary btn-sm">New Message</button>
+      </div>
+      <div class="conversations-list">
+        <div *ngFor="let conversation of conversations"
+             class="conversation-item"
+             [class.active]="selectedConversation?.id === conversation.id"
+             [class.unread]="conversation.unreadCount > 0"
+             (click)="selectConversation(conversation)">
+          <div class="conversation-avatar">
+            <div class="avatar-placeholder">{{ conversation.id }}</div>
+          </div>
+          <div class="conversation-details">
+            <div class="conversation-header-row">
+              <h4 class="conversation-title">{{ conversation.adTitle || 'Conversation' }}</h4>
+              <span class="conversation-time">{{ formatDate(conversation.lastMessage.sentAt) }}</span>
+            </div>
+            <p class="last-message">{{ conversation.lastMessage.content }}</p>
+            <span *ngIf="conversation.unreadCount > 0" class="unread-count">{{ conversation.unreadCount }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="messages-panel">
+      <div *ngIf="!selectedConversation" class="no-selection">
+        <p>Select a conversation to view messages</p>
+      </div>
+      <div *ngIf="selectedConversation" class="conversation-view">
+        <div class="conversation-header">
+          <h3>{{ selectedConversation.adTitle || 'Conversation' }}</h3>
+        </div>
+        <div class="messages-list">
+          <div class="message-item sent">
+            <div class="message-content">
+              <p>{{ selectedConversation.lastMessage.content }}</p>
+              <span class="message-time">{{ formatDate(selectedConversation.lastMessage.sentAt) }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="message-input">
+          <input type="text" placeholder="Type a message..." class="form-control" />
+          <button class="btn btn-primary">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

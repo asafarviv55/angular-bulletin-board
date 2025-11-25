@@ -1,0 +1,72 @@
+<div class="container">
+  <h2>My Favorites</h2>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div class="favorites-layout">
+    <div class="collections-sidebar">
+      <h3>Collections</h3>
+      <button class="btn btn-primary btn-sm mb-3">New Collection</button>
+      <div class="collections-list">
+        <div class="collection-item"
+             [class.active]="!selectedCollection"
+             (click)="clearFilter()">
+          <span class="collection-name">All Favorites</span>
+          <span class="collection-count">{{ favorites.length }}</span>
+        </div>
+        <div *ngFor="let collection of collections"
+             class="collection-item"
+             [class.active]="selectedCollection?.id === collection.id"
+             (click)="filterByCollection(collection)">
+          <span class="collection-name">{{ collection.name }}</span>
+          <span class="collection-count">{{ collection.favoriteCount }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="favorites-content">
+      <div *ngIf="isLoading" class="loading">
+        Loading favorites...
+      </div>
+
+      <div *ngIf="!isLoading && favorites.length === 0" class="no-favorites">
+        <p>No favorites found. Start adding ads to your favorites!</p>
+      </div>
+
+      <div *ngIf="!isLoading && favorites.length > 0" class="favorites-grid">
+        <div *ngFor="let favorite of favorites" class="favorite-card">
+          <div class="favorite-image">
+            <img [src]="favorite.ad.imageUrl || 'assets/placeholder.jpg'" [alt]="favorite.ad.title" />
+          </div>
+          <div class="favorite-details">
+            <div class="favorite-header">
+              <h3>{{ favorite.ad.title }}</h3>
+              <button (click)="removeFavorite(favorite.id)" class="btn-remove">
+                &#10005;
+              </button>
+            </div>
+            <p class="category">{{ favorite.ad.categoryName }}</p>
+            <p class="description">{{ favorite.ad.description }}</p>
+            <div class="favorite-meta">
+              <span class="price">{{ favorite.ad.price | currency:favorite.ad.currency }}</span>
+              <span class="location">{{ favorite.ad.location }}</span>
+            </div>
+            <div class="favorite-footer">
+              <span class="posted-date">{{ favorite.ad.postedAt | date:'MMM d, yyyy' }}</span>
+              <span class="saved-date">Saved: {{ favorite.createdAt | date:'short' }}</span>
+            </div>
+            <div *ngIf="favorite.notes" class="notes">
+              <strong>Notes:</strong> {{ favorite.notes }}
+            </div>
+            <div class="favorite-actions">
+              <a routerLink="/ads/{{ favorite.adId }}" class="btn btn-primary btn-sm">View Ad</a>
+              <button class="btn btn-secondary btn-sm">Share</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,107 @@
+<div class="container">
+  <div class="search-header">
+    <h2>Search Results</h2>
+    <p *ngIf="!isLoading">Found {{ totalResults }} results</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div class="search-layout">
+    <div class="filters-sidebar">
+      <h3>Filters</h3>
+
+      <div class="filter-group">
+        <label>Price Range</label>
+        <div class="price-inputs">
+          <input type="number" [(ngModel)]="filters.minPrice" placeholder="Min" class="form-control" />
+          <span>to</span>
+          <input type="number" [(ngModel)]="filters.maxPrice" placeholder="Max" class="form-control" />
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>Location</label>
+        <input type="text" [(ngModel)]="filters.location" placeholder="Enter location" class="form-control" />
+      </div>
+
+      <div class="filter-group">
+        <label>Condition</label>
+        <select [(ngModel)]="filters.condition" class="form-control">
+          <option value="">Any Condition</option>
+          <option *ngFor="let condition of itemConditions" [value]="condition">{{ condition }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Posted Within</label>
+        <select [(ngModel)]="filters.postedWithin" class="form-control">
+          <option value="">Any Time</option>
+          <option *ngFor="let option of postedWithinOptions" [value]="option">{{ option }}</option>
+        </select>
+      </div>
+
+      <div class="filter-actions">
+        <button (click)="applyFilters()" class="btn btn-primary">Apply Filters</button>
+        <button (click)="clearFilters()" class="btn btn-secondary">Clear</button>
+      </div>
+    </div>
+
+    <div class="results-content">
+      <div class="results-toolbar">
+        <div class="sort-controls">
+          <label>Sort by:</label>
+          <select (change)="sortResults($any($event.target).value, filters.sortOrder || 'DESC')" class="form-control">
+            <option *ngFor="let option of sortOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
+        <button class="btn btn-outline">Save Search</button>
+      </div>
+
+      <div *ngIf="isLoading" class="loading">
+        Searching...
+      </div>
+
+      <div *ngIf="!isLoading && results.length === 0" class="no-results">
+        <p>No results found. Try adjusting your search criteria.</p>
+      </div>
+
+      <div *ngIf="!isLoading && results.length > 0" class="results-grid">
+        <div *ngFor="let result of results" class="result-card">
+          <div class="result-image">
+            <img [src]="result.imageUrl || 'assets/placeholder.jpg'" [alt]="result.title" />
+            <span *ngIf="result.isFeatured" class="featured-badge">Featured</span>
+          </div>
+          <div class="result-details">
+            <h3>{{ result.title }}</h3>
+            <p class="category">{{ result.categoryName }}</p>
+            <p class="description">{{ result.description }}</p>
+            <div class="result-meta">
+              <span class="price">{{ result.price | currency:result.currency }}</span>
+              <span class="condition">{{ result.condition }}</span>
+            </div>
+            <div class="result-footer">
+              <span class="location">{{ result.location }}</span>
+              <span class="posted-date">{{ result.postedAt | date:'MMM d' }}</span>
+            </div>
+            <div class="seller-info">
+              <span class="seller-name">{{ result.sellerName }}</span>
+              <span class="seller-rating">★ {{ result.sellerRating }}/5</span>
+            </div>
+            <div class="result-stats">
+              <span>{{ result.viewCount }} views</span>
+              <span>{{ result.favoriteCount }} favorites</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="totalPages > 1" class="pagination">
+        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1" class="btn">Previous</button>
+        <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages" class="btn">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
